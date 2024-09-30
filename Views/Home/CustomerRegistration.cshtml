@@ -1,0 +1,51 @@
+﻿@model GASSBOOKING_WEBSITE.Models.Customer
+
+@{
+    ViewData["Title"] = "Customer Registration";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-info">@ViewBag.Message</div>
+}
+
+<form asp-action="RegisterCustomer" method="post">
+    <div class="form-group">
+        <label asp-for="Customer_Name"></label>
+        <input asp-for="Customer_Name" class="form-control" required />
+        <span asp-validation-for="Customer_Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Consumer_Number"></label>
+        <input asp-for="Consumer_Number" class="form-control" required />
+        <span asp-validation-for="Consumer_Number" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Customer_Address"></label>
+        <input asp-for="Customer_Address" class="form-control" required />
+        <span asp-validation-for="Customer_Address" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Customer_Phone"></label>
+        <input asp-for="Customer_Phone" class="form-control" required />
+        <span asp-validation-for="Customer_Phone" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Customer_Email"></label>
+        <input asp-for="Customer_Email" class="form-control" required />
+        <span asp-validation-for="Customer_Email" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="UserName">Username</label>
+        <input type="text" name="UserName" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label for="Password">Password</label>
+        <input type="password" name="Password" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Register</button>
+    </div>
+</form>

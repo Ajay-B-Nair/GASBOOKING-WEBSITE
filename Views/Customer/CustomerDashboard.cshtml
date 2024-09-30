@@ -1,0 +1,97 @@
+﻿@model IEnumerable<GASSBOOKING_WEBSITE.Models.Booking>
+
+<div class="container">
+    <h2>Your Booking History</h2>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success">@TempData["Message"]</div>
+    }
+
+    @if (Model == null || !Model.Any())
+    {
+        <p>No bookings found.</p>
+    }
+
+    <button class="btn btn-primary" id="orderButton">Order Gas</button>
+
+    <!-- Booking Form Modal -->
+    <div id="bookingForm" style="display:none;">
+        <h3>Order Gas</h3>
+        <form asp-action="BookGas" method="post">
+            <div class="form-group">
+                <label for="Cylinder_Id">Cylinder Type:</label>
+                <select name="Cylinder_Id" id="Cylinder_Id" required onchange="updateCylinderType()">
+                    @if (ViewBag.CylinderTypes != null)
+                    {
+                        foreach (var cylinder in ViewBag.CylinderTypes)
+                        {
+                            <option value="@cylinder.CylinderId" data-type="@cylinder.CylinderType">@cylinder.CylinderType</option>
+                        }
+                    }
+                    else
+                    {
+                        <option disabled>No cylinder types available</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="Booking_Date">Booking Date:</label>
+                <input type="date" name="Booking_Date" required />
+            </div>
+            <div class="form-group">
+                <label for="Booking_Status">Booking Status:</label>
+                <input type="text" name="Booking_Status" required />
+            </div>
+            <div class="form-group">
+                <label for="Booking_Mode">Booking Mode:</label>
+                <input type="text" name="Booking_Mode" required />
+            </div>
+            <button type="submit" class="btn btn-success">Submit</button>
+            <button type="button" class="btn btn-secondary" id="cancelButton">Cancel</button>
+        </form>
+    </div>
+
+    @if (Model.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Cylinder Type</th>
+                    <th>Booking Date</th>
+                    <th>Status</th>
+                    <th>Mode</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var booking in Model)
+                {
+                    <tr>
+                        <td>@booking.Cylinder_Type</td>
+                        <td>@booking.Booking_Date.ToString()</td>
+                        <td>@booking.Booking_Status</td>
+                        <td>@booking.Booking_Mode</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById("orderButton").onclick = function () {
+            document.getElementById("bookingForm").style.display = "block";
+        };
+
+        document.getElementById("cancelButton").onclick = function () {
+            document.getElementById("bookingForm").style.display = "none";
+        };
+
+        function updateCylinderType() {
+            var select = document.getElementById("Cylinder_Id");
+            var selectedOption = select.options[select.selectedIndex];
+            document.getElementById("Cylinder_Type").value = selectedOption.getAttribute("data-type");
+        }
+    </script>
+}
