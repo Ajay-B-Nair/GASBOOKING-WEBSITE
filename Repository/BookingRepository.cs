@@ -19,7 +19,7 @@ namespace GASSBOOKING_WEBSITE.Repository
                     // Adding parameters
                     command.Parameters.AddWithValue("@Cylinder_Id", booking.Cylinder_Id);
                     command.Parameters.AddWithValue("@Customer_Reg_Id", booking.Customer_Reg_Id);
-                    command.Parameters.AddWithValue("@Staff_Reg_Id", (object)booking.Staff_Reg_Id ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Staff_Reg_Id", booking.Staff_Reg_Id as object ?? DBNull.Value);
                     command.Parameters.AddWithValue("@Booking_Date", booking.Booking_Date);
                     command.Parameters.AddWithValue("@Booking_Status", booking.Booking_Status);
                     command.Parameters.AddWithValue("@Booking_Mode", booking.Booking_Mode);

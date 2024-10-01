@@ -32,11 +32,11 @@ namespace GASSBOOKING_WEBSITE.Controllers
             if (_authorizationService.ValidateUserService(login.UserName, login.Password, out string userType, out int registerId))
             {
                 var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, login.UserName),
-            new Claim(ClaimTypes.Role, userType),
-            new Claim("RegisterId", registerId.ToString()) // Store register ID in claims
-        };
+                {
+                    new Claim(ClaimTypes.Name, login.UserName),
+                    new Claim(ClaimTypes.Role, userType),
+                    new Claim("RegisterId", registerId.ToString())
+                };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
