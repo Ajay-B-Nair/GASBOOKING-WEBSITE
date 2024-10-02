@@ -11,7 +11,7 @@
     @if (!Model?.Any() ?? true)
     {
         <div class="alert alert-info">No bookings found.</div>
-        <button class="btn btn-primary mt-3" id="orderButton">Order Gas</button>
+        <button class="btn btn-primary mt-3" id="orderButton">Book Now</button>
     }
     else
     {
@@ -69,7 +69,7 @@
 
                         <!-- Hidden inputs for default values -->
                         <input type="hidden" name="Booking_Date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
-                        <input type="hidden" name="Booking_Status" value="Ordered" />
+                        <input type="hidden" name="Booking_Status" value="Booked" />
                         <input type="hidden" name="Booking_Mode" value="Online" />
 
                         <!-- Add space above buttons -->

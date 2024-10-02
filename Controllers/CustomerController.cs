@@ -39,6 +39,7 @@ namespace GASSBOOKING_WEBSITE.Controllers
             }
 
             booking.Customer_Reg_Id = GetCustomerRegId(User);
+
             bool result = await _bookingService.AddBookingAsync(booking);
 
             TempData["Message"] = result ? "Booking successful!" : "Booking failed. Please try again.";
@@ -51,10 +52,10 @@ namespace GASSBOOKING_WEBSITE.Controllers
             return customerRegIdClaim != null ? int.Parse(customerRegIdClaim) : 0;
         }
 
-        public async Task<IActionResult> BookingHistory()
-        {
-            var bookings = await _bookingService.GetBookingHistoryAsync(User.Identity.Name);
-            return View(bookings);
-        }
+        //public async Task<IActionResult> BookingHistory()
+        //{
+        //    var bookings = await _bookingService.GetBookingHistoryAsync(User.Identity.Name);
+        //    return View(bookings);
+        //}
     }
 }
