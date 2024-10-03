@@ -44,15 +44,15 @@ namespace GASSBOOKING_WEBSITE.Service
 
         public async Task<bool> MarkBookingAsDeliveredAsync(int bookingId, int staffRegId)
         {
+            var booking = await _bookingRepository.GetBookingByIdAsync(bookingId);
+            if (booking == null || booking.Cylinder_Id == null) return false;
+
             // Update the booking status
             var updateResult = await _bookingRepository.UpdateBookingStatusAsync(bookingId, staffRegId, "Delivered");
 
             if (!updateResult) return false;
 
-            // Save the delivery record
-            return await _bookingRepository.SaveDeliveryRecordAsync(bookingId, staffRegId);
+            return await _bookingRepository.UpdateCylinderStockAsync(booking.Cylinder_Id.Value);
         }
-
-
     }
 }
