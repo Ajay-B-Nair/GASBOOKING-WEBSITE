@@ -56,7 +56,8 @@ namespace GASSBOOKING_WEBSITE.Repository
                         while (await reader.ReadAsync())
                         {
                             var booking = new Booking
-                            {                                Cylinder_Type = reader.IsDBNull(7) ? string.Empty : reader.GetString(7),
+                            {
+                                Cylinder_Type = reader.IsDBNull(7) ? string.Empty : reader.GetString(7),
                                 Customer_Reg_Id = reader.IsDBNull(2) ? 0 : reader.GetInt32(2),
                                 Staff_Reg_Id = reader.IsDBNull(3) ? (int?)null : reader.GetInt32(3),
                                 Booking_Date = reader.IsDBNull(4) ? DateTime.MinValue : reader.GetDateTime(4),
@@ -104,5 +105,57 @@ namespace GASSBOOKING_WEBSITE.Repository
             return bookings;
         }
 
+        public async Task<bool> UpdateBookingStatusAsync(int bookingId, int staffRegId, string status)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("UpdateBookingStatus", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@Booking_Id", bookingId);
+                    command.Parameters.AddWithValue("@Staff_Reg_Id", staffRegId);
+                    command.Parameters.AddWithValue("@Booking_Status", status);
+
+                    connection.Open();
+                    var affectedRows = await command.ExecuteNonQueryAsync();
+                    return affectedRows > 0;
+                }
+            }
+        }
+
+        public async Task<IEnumerable<Booking>> GetAcceptedBookingsByStaffAsync(int staffRegId)
+        {
+            var acceptedBookings = new List<Booking>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                using (var command = new SqlCommand("GetAcceptedBookingsByStaff", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@StaffRegId", staffRegId);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            acceptedBookings.Add(new Booking
+                            {
+                                Booking_Id = reader.GetInt32(reader.GetOrdinal("Booking_Id")),
+                                Cylinder_Id = reader.GetInt32(reader.GetOrdinal("Cylinder_Id")),
+                                Customer_Reg_Id = reader.GetInt32(reader.GetOrdinal("Customer_Reg_Id")),
+                                Staff_Reg_Id = reader.GetInt32(reader.GetOrdinal("Staff_Reg_Id")),
+                                Booking_Date = reader.GetDateTime(reader.GetOrdinal("Booking_Date")),
+                                Booking_Status = reader.GetString(reader.GetOrdinal("Booking_Status")),
+                                Booking_Mode = reader.GetString(reader.GetOrdinal("Booking_Mode"))
+                            });
+                        }
+                    }
+                }
+            }
+
+            return acceptedBookings;
+        }
     }
 }

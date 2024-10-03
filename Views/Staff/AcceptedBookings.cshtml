@@ -1,0 +1,43 @@
+﻿@model IEnumerable<GASSBOOKING_WEBSITE.Models.Booking>
+
+@{
+    ViewData["Title"] = "Accepted Bookings";
+}
+
+<div class="container mt-4">
+    <h3>Accepted Bookings</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Cylinder ID</th>
+                <th>Customer Reg ID</th>
+                <th>Booking Date</th>
+                <th>Booking Status</th>
+                <th>Booking Mode</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="6" class="text-center">No accepted bookings.</td>
+                </tr>
+            }
+            else
+            {
+                foreach (var booking in Model)
+                {
+                    <tr>
+                        <td>@booking.Booking_Id</td>
+                        <td>@booking.Cylinder_Id</td>
+                        <td>@booking.Customer_Reg_Id</td>
+                        <td>@booking.Booking_Date?.ToShortDateString()</td>
+                        <td>@booking.Booking_Status</td>
+                        <td>@booking.Booking_Mode</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
