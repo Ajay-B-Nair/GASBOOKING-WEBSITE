@@ -24,5 +24,12 @@ namespace GASSBOOKING_WEBSITE.Service
         {
             return await _bookingRepository.GetBookingHistoryAsync(username);
         }
+
+        public List<Booking> GetAllBookings()
+        {
+            var allBookings = _bookingRepository.GetAllBookings();
+
+            return allBookings.Where(b => b.Booking_Status == "Booked").ToList();
+        }
     }
 }

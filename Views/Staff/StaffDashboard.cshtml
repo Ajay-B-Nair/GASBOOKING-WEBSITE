@@ -1,9 +1,45 @@
-﻿@{
+﻿@model List<GASSBOOKING_WEBSITE.Models.Booking>
+@using System.Linq
+
+@{
     ViewData["Title"] = "Staff Dashboard";
 }
 
-<h2>Hello, Staff!</h2>
-
 <div class="container mt-4">
-    <p>Welcome to the Staff Dashboard. Here you can manage your application.</p>
+
+    <h3>Booking List</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Cylinder ID</th>
+                <th>Customer Reg ID</th>
+                <th>Booking Date</th>
+                <th>Booking Status</th>
+                <th>Booking Mode</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="6" class="text-center">No bookings available.</td>
+                </tr>
+            }
+            else
+            {
+                foreach (var booking in Model)
+                {
+                    <tr>
+                        <td>@booking.Booking_Id</td>
+                        <td>@booking.Cylinder_Id</td>
+                        <td>@booking.Customer_Reg_Id</td>
+                        <td>@booking.Booking_Date?.ToShortDateString()</td>
+                        <td>@booking.Booking_Status</td>
+                        <td>@booking.Booking_Mode</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
 </div>

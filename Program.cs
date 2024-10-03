@@ -17,8 +17,7 @@ builder.Services.AddScoped<CylinderRepository>();
 builder.Services.AddScoped<ICylinderService, CylinderService>();
 builder.Services.AddScoped<BookingRepository>();
 builder.Services.AddScoped<IBookingService, BookingService>();
-
-// Register AuthorizationRepository
+builder.Services.AddScoped<BookingRepository>();
 builder.Services.AddScoped<AuthorizationRepository>();
 
 // Configure authentication

@@ -36,7 +36,6 @@ namespace GASSBOOKING_WEBSITE.Repositories
                     connection.Open();
                     command.ExecuteNonQuery();
 
-                    // Safely handle DBNull for userType
                     userType = userTypeParam.Value != DBNull.Value ? userTypeParam.Value as string : null;
 
                     if (customerRegIdParam.Value != DBNull.Value)
@@ -45,7 +44,7 @@ namespace GASSBOOKING_WEBSITE.Repositories
                     }
                     else
                     {
-                        customerRegId = 0;
+                        customerRegId = 0; // Default value for admin
                     }
 
                     return !string.IsNullOrEmpty(userType);

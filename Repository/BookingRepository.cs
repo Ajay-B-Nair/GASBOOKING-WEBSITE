@@ -35,7 +35,7 @@ namespace GASSBOOKING_WEBSITE.Repository
                     int returnValue = (int)command.Parameters["@NewBookingId"].Value;
                     booking.Booking_Id = returnValue;
 
-                    return returnValue > 0;  // Return true if the return value is positive
+                    return returnValue > 0;
                 }
             }
         }
@@ -69,6 +69,39 @@ namespace GASSBOOKING_WEBSITE.Repository
                     return bookings;
                 }
             }
+        }
+
+        public List<Booking> GetAllBookings()
+        {
+            var bookings = new List<Booking>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("GetAllBookings", connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            bookings.Add(new Booking
+                            {
+                                Booking_Id = reader.IsDBNull(0) ? (int?)null : reader.GetInt32(0),
+                                Cylinder_Id = reader.IsDBNull(1) ? (int?)null : reader.GetInt32(1),
+                                Customer_Reg_Id = reader.IsDBNull(2) ? (int?)null : reader.GetInt32(2),
+                                Staff_Reg_Id = reader.IsDBNull(3) ? (int?)null : reader.GetInt32(3),
+                                Booking_Date = reader.IsDBNull(4) ? (DateTime?)null : reader.GetDateTime(4),
+                                Booking_Status = reader.IsDBNull(5) ? null : reader.GetString(5),
+                                Booking_Mode = reader.IsDBNull(6) ? null : reader.GetString(6)
+                            });
+                        }
+                    }
+                }
+            }
+
+            return bookings;
         }
 
     }
