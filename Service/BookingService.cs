@@ -42,6 +42,17 @@ namespace GASSBOOKING_WEBSITE.Service
             return await _bookingRepository.GetAcceptedBookingsByStaffAsync(staffRegId);
         }
 
+        public async Task<bool> MarkBookingAsDeliveredAsync(int bookingId, int staffRegId)
+        {
+            var booking = await _bookingRepository.GetBookingByIdAsync(bookingId);
+            if (booking == null || booking.Cylinder_Id == null) return false;
 
+            // Update the booking status
+            var updateResult = await _bookingRepository.UpdateBookingStatusAsync(bookingId, staffRegId, "Delivered");
+
+            if (!updateResult) return false;
+
+            return await _bookingRepository.UpdateCylinderStockAsync(booking.Cylinder_Id.Value);
+        }
     }
 }

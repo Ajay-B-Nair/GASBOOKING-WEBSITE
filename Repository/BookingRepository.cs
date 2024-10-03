@@ -157,5 +157,71 @@ namespace GASSBOOKING_WEBSITE.Repository
 
             return acceptedBookings;
         }
+
+        public async Task<bool> SaveDeliveryRecordAsync(int bookingId, int staffRegId)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("AddDelivery", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@Booking_Id", bookingId);
+                    command.Parameters.AddWithValue("@Staff_Reg_Id", staffRegId);
+                    command.Parameters.AddWithValue("@Delivery_Date", DateTime.Now);
+
+                    connection.Open();
+                    var affectedRows = await command.ExecuteNonQueryAsync();
+                    return affectedRows > 0;
+                }
+            }
+        }
+
+        public async Task<bool> UpdateCylinderStockAsync(int cylinderId)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("UpdateCylinderStock", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@Cylinder_Id", cylinderId);
+
+                    connection.Open();
+                    var affectedRows = await command.ExecuteNonQueryAsync();
+                    return affectedRows > 0;
+                }
+            }
+        }
+
+        public async Task<Booking> GetBookingByIdAsync(int bookingId)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand("GetBookingById", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Booking_Id", bookingId);
+
+                    connection.Open();
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            return new Booking
+                            {
+                                Booking_Id = reader.GetInt32(reader.GetOrdinal("Booking_Id")),
+                                Cylinder_Id = reader.GetInt32(reader.GetOrdinal("Cylinder_Id")),
+                            };
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+
+
     }
 }

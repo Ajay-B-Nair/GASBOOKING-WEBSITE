@@ -15,13 +15,14 @@
                 <th>Booking Date</th>
                 <th>Booking Status</th>
                 <th>Booking Mode</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
             @if (!Model.Any())
             {
                 <tr>
-                    <td colspan="6" class="text-center">No accepted bookings.</td>
+                    <td colspan="7" class="text-center">No accepted bookings.</td>
                 </tr>
             }
             else
@@ -35,6 +36,11 @@
                         <td>@booking.Booking_Date?.ToShortDateString()</td>
                         <td>@booking.Booking_Status</td>
                         <td>@booking.Booking_Mode</td>
+                        <td>
+                            <form asp-action="MarkAsDelivered" asp-route-bookingId="@booking.Booking_Id" asp-route-staffRegId="@booking.Staff_Reg_Id" method="post">
+                                <button type="submit" class="btn btn-success">Delivered</button>
+                            </form>
+                        </td>
                     </tr>
                 }
             }
