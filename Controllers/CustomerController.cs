@@ -2,9 +2,11 @@
 using GASSBOOKING_WEBSITE.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace GASSBOOKING_WEBSITE.Controllers
 {
+
     [Authorize(Roles = "customer")]
     public class CustomerController : Controller
     {
@@ -20,14 +22,10 @@ namespace GASSBOOKING_WEBSITE.Controllers
         public async Task<IActionResult> CustomerDashboard()
         {
             var bookings = await _bookingService.GetBookingHistoryAsync(User.Identity.Name);
-
             var cylinderTypes = await _cylinderService.GetCylinderTypesAsync();
-            ViewBag.CylinderTypes = cylinderTypes;
 
-            if (bookings == null || !bookings.Any())
-            {
-                ViewData["Message"] = "No bookings found.";
-            }
+            ViewBag.CylinderTypes = cylinderTypes;
+            ViewData["Message"] = bookings == null || !bookings.Any() ? "No bookings found." : null;
 
             return View(bookings);
         }
@@ -35,33 +33,29 @@ namespace GASSBOOKING_WEBSITE.Controllers
         [HttpPost]
         public async Task<IActionResult> BookGas(Booking booking)
         {
-            ViewBag.CylinderTypes = await _cylinderService.GetCylinderTypesAsync();
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                booking.Customer_Reg_Id = GetCustomerRegId(User.Identity.Name);
-
-                bool result = await _bookingService.AddBookingAsync(booking);
-
-                TempData["Message"] = result ? "Booking successful!" : "Booking failed. Please try again.";
                 return RedirectToAction("CustomerDashboard");
             }
 
-            var bookings = await _bookingService.GetBookingHistoryAsync(User.Identity.Name);
-            return View("CustomerDashboard", bookings);
+            booking.Customer_Reg_Id = GetCustomerRegId(User);
+
+            bool result = await _bookingService.AddBookingAsync(booking);
+
+            TempData["Message"] = result ? "Booking successful!" : "Booking failed. Please try again.";
+            return RedirectToAction("CustomerDashboard");
         }
 
-
-
-        private int GetCustomerRegId(string username)
+        private int GetCustomerRegId(ClaimsPrincipal user)
         {
-            return 1;
+            var customerRegIdClaim = user.FindFirst("RegisterId")?.Value;
+            return customerRegIdClaim != null ? int.Parse(customerRegIdClaim) : 0;
         }
 
-        public async Task<IActionResult> BookingHistory()
-        {
-            var bookings = await _bookingService.GetBookingHistoryAsync(User.Identity.Name);
-            return View(bookings);
-        }
+        //public async Task<IActionResult> BookingHistory()
+        //{
+        //    var bookings = await _bookingService.GetBookingHistoryAsync(User.Identity.Name);
+        //    return View(bookings);
+        //}
     }
 }

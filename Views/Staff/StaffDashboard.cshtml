@@ -1,9 +1,113 @@
-﻿@{
+﻿@* @model List<GASSBOOKING_WEBSITE.Models.Booking>
+@using System.Linq
+@using System.Security.Claims
+
+@{
     ViewData["Title"] = "Staff Dashboard";
 }
 
-<h2>Hello, Staff!</h2>
+<div class="container mt-4">
+
+    <h3>Booking List</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Cylinder ID</th>
+                <th>Customer Reg ID</th>
+                <th>Booking Date</th>
+                <th>Booking Status</th>
+                <th>Booking Mode</th>
+                <th>Actions</th> <!-- New column for actions -->
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="7" class="text-center">No bookings available.</td> <!-- Adjust colspan -->
+                </tr>
+            }
+            else
+            {
+                foreach (var booking in Model)
+                {
+                    <tr>
+                        <td>@booking.Booking_Id</td>
+                        <td>@booking.Cylinder_Id</td>
+                        <td>@booking.Customer_Reg_Id</td>
+                        <td>@booking.Booking_Date?.ToShortDateString()</td>
+                        <td>@booking.Booking_Status</td>
+                        <td>@booking.Booking_Mode</td>
+                        <td>
+                            <form asp-action="AcceptBooking" method="post" style="display:inline;">
+                                <input type="hidden" name="bookingId" value="@booking.Booking_Id" />
+                                <input type="hidden" name="staffRegId" value="@User.FindFirst("RegisterId")?.Value" /> <!-- Correct claim access -->
+                                <button type="submit" class="btn btn-success" @(booking.Booking_Status == "Booking Accepted" ? "disabled" : "")>Accept</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div> *@
+
+@model List<GASSBOOKING_WEBSITE.Models.Booking>
+@using System.Linq
+@using System.Security.Claims
+
+@{
+    ViewData["Title"] = "Staff Dashboard";
+}
 
 <div class="container mt-4">
-    <p>Welcome to the Staff Dashboard. Here you can manage your application.</p>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Booking List</h3>
+        <a asp-action="AcceptedBookings" class="btn btn-info">View Accepted Bookings</a> <!-- Button to view accepted bookings -->
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Cylinder ID</th>
+                <th>Customer Reg ID</th>
+                <th>Booking Date</th>
+                <th>Booking Status</th>
+                <th>Booking Mode</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="7" class="text-center">No bookings available.</td>
+                </tr>
+            }
+            else
+            {
+                foreach (var booking in Model)
+                {
+                    <tr>
+                        <td>@booking.Booking_Id</td>
+                        <td>@booking.Cylinder_Id</td>
+                        <td>@booking.Customer_Reg_Id</td>
+                        <td>@booking.Booking_Date?.ToShortDateString()</td>
+                        <td>@booking.Booking_Status</td>
+                        <td>@booking.Booking_Mode</td>
+                        <td>
+                            <form asp-action="AcceptBooking" method="post" style="display:inline;">
+                                <input type="hidden" name="bookingId" value="@booking.Booking_Id" />
+                                <input type="hidden" name="staffRegId" value="@User.FindFirst("RegisterId")?.Value" />
+                                <button type="submit" class="btn btn-success" @(booking.Booking_Status == "Booking Accepted" ? "disabled" : "")>Accept</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
 </div>
