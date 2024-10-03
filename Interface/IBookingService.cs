@@ -11,5 +11,7 @@ namespace GASSBOOKING_WEBSITE.Interface
         List<Booking> GetAllBookings();
         Task<bool> AcceptBookingAsync(int bookingId, int staffRegId);
         Task<IEnumerable<Booking>> GetAcceptedBookingsByStaffAsync(int staffRegId);
+        Task<bool> MarkBookingAsDeliveredAsync(int bookingId, int staffRegId);
+
     }
 }
